@@ -2,52 +2,62 @@
 Author: PeterHartog
 """
 from dataclasses import dataclass
+from typing import Any
 
 import pytest
 
-from registry_factory.factory import Factory
+from registry_factory.registry import AbstractRegistry, Registry
 from registry_factory.utils import RegistrationError, RegistrationWarning
 
 
-class TestArgumentsRegistry:
-    """Test cases for a arguments from created Registry class."""
+@pytest.fixture(scope="module")
+def test_registry() -> AbstractRegistry:
+    """Return a test registry."""
+    return Registry
 
-    class _TestFactory(Factory):
-        TestRegistry = Factory.create_registry(shared=False)
 
-    def test_register_arguments(self):
-        """Test the register_arguments method."""
+@pytest.fixture(scope="module")
+def registered_object(test_registry: AbstractRegistry) -> Any:
+    """Return a test object."""
 
-        @self._TestFactory.TestRegistry.register_arguments("registered")
-        @dataclass
+    @test_registry.register_arguments("registered")
+    @dataclass
+    class Test:
+        arg1 = 1
+
+    return Test
+
+
+def test_register_arguments(test_registry: AbstractRegistry, registered_object: Any) -> None:
+    """Test the register_arguments method."""
+    assert test_registry.get_arguments("registered") == registered_object
+
+
+def test_register_arguments_not_dataclass(test_registry: AbstractRegistry) -> None:
+    """Test the register_arguments method with a non dataclass."""
+
+    with pytest.raises(RegistrationError):
+
+        @test_registry.register_arguments("registered_non_dataclass")
+        def test():
+            pass
+
+
+def test_register_arguments_not_dataclass_warning(test_registry: AbstractRegistry) -> None:
+    """Test the register_arguments method with a non dataclass and a warning."""
+    with pytest.warns(RegistrationWarning):
+
+        @test_registry.register_arguments("registered_non_dataclass")
         class Test:
             arg1 = 1
 
-        assert self._TestFactory.TestRegistry.get_arguments("registered") == Test
 
-    def test_register_arguments_not_dataclass(self):
-        """Test the register_arguments method with a non dataclass."""
+def test_register_arguments_already_registered(test_registry: AbstractRegistry, registered_object: Any) -> None:
+    """Test the register_arguments method with a already registered key."""
 
-        with pytest.raises(RegistrationError):
+    with pytest.raises(KeyError):
 
-            @self._TestFactory.TestRegistry.register_arguments("registered_non_dataclass")
-            def test():
-                pass
-
-    def test_register_arguments_not_dataclass_warning(self):
-        """Test the register_arguments method with a non dataclass and a warning."""
-        with pytest.warns(RegistrationWarning):
-
-            @self._TestFactory.TestRegistry.register_arguments("registered_non_dataclass")
-            class Test:
-                arg1 = 1
-
-    def test_register_arguments_already_registered(self):
-        """Test the register_arguments method with a already registered key."""
-
-        with pytest.raises(KeyError):
-
-            @self._TestFactory.TestRegistry.register_arguments("registered")
-            @dataclass
-            class Test:
-                arg1 = 1
+        @test_registry.register_arguments("registered")
+        @dataclass
+        class Test:
+            arg1 = 1

@@ -1,42 +1,17 @@
 """Registry module for a codebase."""
 import warnings
-from abc import ABC
 from dataclasses import dataclass, is_dataclass
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
-# from registry_factory.tracker import Tracker
 from registry_factory.patterns.mediator import HashMediator
 from registry_factory.typescripts import Dataclass
 from registry_factory.utils import RegistrationError, RegistrationWarning
 
-__all__ = ["AbstractRegistry"]
+__all__ = ["AbstractRegistry", "Registry"]
 
 
-class AbstractRegistry(ABC):
-    """Abstract class to generate a registry."""
-
-    _registry_hash: int
+class _RegistryDict:
     mediator: HashMediator
-
-    @property
-    def name(self) -> str:
-        return self.__class__.__name__
-
-    @classmethod
-    def __call__(cls, key: str) -> None:
-        """Return the object registered to the key."""
-        raise NotImplementedError("Use the get() method to call the registry.")
-
-    @classmethod
-    def __getitem__(cls, key: str) -> None:
-        """Return the object registered to the key."""
-        raise NotImplementedError("Use the get() method to call the registry.")
-
-    @classmethod
-    def __contains__(cls, key: str, **kwargs) -> bool:
-        """Return True if the key is registered."""
-        key_dict = cls.mediator.generate_key_dict(key=key, **kwargs)
-        return (key, key_dict) in cls.mediator.hash_table.slots.values()
 
     @classmethod
     def __len__(cls) -> int:
@@ -49,14 +24,10 @@ class AbstractRegistry(ABC):
         return list(cls.mediator.hash_table.slots.values())
 
     @classmethod
-    def __str__(cls) -> str:
-        """Return a string representation of the registry."""
-        return f"{cls.__name__}({cls.mediator.hash_table.slots})"
-
-    @classmethod
-    def __repr__(cls) -> str:
-        """Return a string representation of the registry."""
-        return f"{cls.__name__}({cls.mediator.hash_table.slots})"
+    def __contains__(cls, key: str, **kwargs) -> bool:
+        """Return True if the key is registered."""
+        key_dict = cls.mediator.generate_key_dict(key=key, **kwargs)
+        return (key, key_dict) in cls.mediator.hash_table.slots.values()
 
     @classmethod
     def items(cls) -> List[Tuple[Tuple[str, Dict], Any]]:
@@ -73,6 +44,47 @@ class AbstractRegistry(ABC):
     def values(cls) -> List[Any]:
         """Return a list of registered keys."""
         return [cls.mediator.hash_table.data.values()]
+
+    @classmethod
+    def reset(cls):
+        """Reset the registry."""
+        cls.mediator.hash_table.clear()
+
+    @classmethod
+    def clear(cls):
+        """Reset the registry."""
+        cls.mediator.hash_table.clear()
+
+
+class AbstractRegistry(_RegistryDict):
+    mediator: HashMediator
+
+    _name: str
+    _registry_hash: Optional[int] = None
+
+    @property
+    def name(self) -> str:
+        return self._name
+
+    @classmethod
+    def __call__(cls, key: str) -> None:
+        """Return the object registered to the key."""
+        raise NotImplementedError("Use the get() method to call the registry.")
+
+    @classmethod
+    def __getitem__(cls, key: str) -> None:
+        """Return the object registered to the key."""
+        raise NotImplementedError("Use the get() method to call the registry.")
+
+    @classmethod
+    def __str__(cls) -> str:
+        """Return a string representation of the registry."""
+        return f"{cls.__name__}({cls.mediator.hash_table.slots})"
+
+    @classmethod
+    def __repr__(cls) -> str:
+        """Return a string representation of the registry."""
+        return f"{cls.__name__}({cls.mediator.hash_table.slots})"
 
     @classmethod
     def register(cls, key: str, **kwargs) -> Callable:
@@ -131,11 +143,6 @@ class AbstractRegistry(ABC):
             raise RegistrationError(f"{key} is not a valid choice.")
 
     @classmethod
-    def reset(cls):
-        """Reset the registry."""
-        cls.mediator.hash_table.clear()
-
-    @classmethod
     def register_arguments(cls, key: str, **kwargs) -> Callable:
         """Register the arguments to the key."""
 
@@ -164,3 +171,7 @@ class AbstractRegistry(ABC):
     def get_choice(cls, key: str, **kwargs) -> Any:  # Legacy
         """Legacy: Returns an object from the index."""
         return cls.get(key, **kwargs)
+
+
+class Registry(AbstractRegistry):
+    mediator: HashMediator = HashMediator()

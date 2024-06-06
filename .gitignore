@@ -128,10 +128,15 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# PyCharm 
+# PyCharm
 .idea/
 
 
 # Visual Studio Code related
 .vscode/
 legacy.py
+
+# unreleased
+tests/modules/
+tests/test_callbacks/
+registry_factory/callbacks/

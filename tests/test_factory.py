@@ -1,85 +1,66 @@
 """Test cases for Registry sharing.
 Author: PeterHartog
 """
+from dataclasses import dataclass
+
 import pytest
 
 from registry_factory.factory import Factory
+from registry_factory.registry import AbstractRegistry
 
 
-class TestFactory:
-    """Test cases for Registry Factory."""
+@pytest.fixture(scope="module")
+def test_factory() -> Factory:
+    """Return a test factory."""
+    return Factory  # type: ignore
 
-    def test_instantiation(self):
-        """Test creating a new method with the abstract methods."""
 
-        with pytest.raises(ValueError):
-            Factory()
+def test_instantiation(test_factory: Factory) -> None:
+    """Test creating a new method with the abstract methods."""
 
-    def test_inheretence(self):
-        """Test creating a new method without the abstract methods."""
+    with pytest.raises(ValueError):
+        test_factory()  # type: ignore
 
-        class _TestFactory(Factory):
-            pass
 
-    def test_create_registry(self):
-        """Test creating a new registry."""
+def test_inheretence(test_factory: Factory) -> None:
+    """Test creating a new method without the abstract methods."""
 
-        class _TestFactory(Factory):
-            TestRegistry = Factory.create_registry()
+    class _TestFactory(test_factory):  # type: ignore
+        pass
 
-        assert _TestFactory.TestRegistry is not None
 
-    def test_create_shared_registry(self):
-        """Test creating a new shared registry."""
+def test_create_registry(test_factory: Factory) -> None:
+    """Test creating a new registry."""
 
-        class _TestFactory(Factory):
-            TestRegistry = Factory.create_registry(shared=True)
+    assert issubclass(test_factory.create_registry("test_registry"), AbstractRegistry)  # type: ignore
 
-        assert _TestFactory.TestRegistry is not None
 
-    def test_create_registry_from_self(self):
-        """Test creating a new registry from self."""
+def test_get_registries(test_factory: Factory) -> None:
+    """Test getting all registries."""
 
-        with pytest.raises(AttributeError):
+    _ = test_factory.create_registry("test_registry")
+    print(test_factory.get_registries())
 
-            class _TestFactory(Factory):
-                TestRegistry = self.create_registry()
+    assert "test_registry" in test_factory.get_registries().keys()
 
-    def test_get_registries(self):
-        """Test getting all registries."""
 
-        class _TestFactory(Factory):
-            TestRegistry = Factory.create_registry()
+def test_get_subclass_choices(test_factory: Factory) -> None:
+    """Test getting the subclass choices."""
 
-        assert "TestRegistry" in _TestFactory.get_registries().keys()
+    test_registry = test_factory.create_registry("test_registry")
+    test_registry.register_prebuilt(lambda: None, "test")
 
-    def test_get_subclass_choices(self):
-        """Test getting the subclass choices."""
+    assert "test" in test_factory.get_options(["test_registry"])
 
-        class _TestFactory(Factory):
-            TestRegistry = Factory.create_registry()
 
-        @_TestFactory.TestRegistry.register("test")
-        def test():
-            pass
+def test_get_subclass_arguments(test_factory: Factory) -> None:
+    """Test getting the subclass choices."""
 
-        print(Factory)
-        import os
+    test_registry = test_factory.create_registry("test_registry")
 
-        dir_path = os.path.dirname(os.path.realpath(Factory))
-        print(dir_path)
+    @test_registry.register_arguments("test_arg")
+    @dataclass
+    class TestArguments:
+        test_arg: str
 
-        assert ("test", {}) in _TestFactory.items()
-
-    # def test_get_subclass_arguments(self):
-    #     """Test getting the subclass choices."""
-
-    #     class _TestFactory(Factory):
-    #         TestRegistry = Factory.create_registry()
-
-    #     @_TestFactory.TestRegistry.register_arguments("test_arg")
-    #     @dataclass
-    #     class TestArguments:
-    #         test_arg: str
-
-    #     assert TestArguments in _TestFactory.get_registry_arguments(["TestRegistry"]).values()
+    assert TestArguments in test_factory.get_registry_arguments(["test_registry"]).values()
