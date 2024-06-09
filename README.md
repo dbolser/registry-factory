@@ -38,6 +38,14 @@ The codebase can be installed from PyPI using `pip`, or your package manager of 
 $ pip install registry-factory
 ```
 
+Or from local clone, with
+
+```bash
+$ conda env create -f env-dev.yaml
+$ conda activate registry_env
+$ poetry install
+```
+
 ## Dependencies
 
 No third-party dependencies are required to use the minimal functionality of the RegistryFactory.

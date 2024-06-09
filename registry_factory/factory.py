@@ -1,9 +1,10 @@
 """Registry factory module for a codebase."""
+
 # from __future__ import annotations
 
 from typing import Any, Dict, List, Optional, Tuple
 
-from registry_factory.callbacks.tracker import Tracker
+# from registry_factory.callbacks.tracker import Tracker
 from registry_factory.index import HashTable, RegistryTable
 from registry_factory.patterns.facade import ObserverFacade
 from registry_factory.patterns.mediator import HashMediator
@@ -80,7 +81,7 @@ class Factory:
     def view_called(cls) -> None:
         """View the accreditation information."""
         print("Called objects:")
-        Tracker().show()
+        # Tracker().show()
 
     @classmethod
     def get_registries(cls) -> Dict[str, AbstractRegistry]:

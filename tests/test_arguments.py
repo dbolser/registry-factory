@@ -1,6 +1,6 @@
 """Test cases for Registry arguments.
-Author: PeterHartog
 """
+
 from dataclasses import dataclass
 from typing import Any
 
