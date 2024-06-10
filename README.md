@@ -4,10 +4,9 @@
 [![PyPI](https://img.shields.io/github/license/aidd-msca/registry-factory)](LICENSE)
 ![PyPI](https://img.shields.io/pypi/pyversions/registry-factory)
 [![GitHub Repo stars](https://img.shields.io/github/stars/aidd-msca/registry-factory)](https://github.com/aidd-msca/registry-factory/stargazers)
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1jlyEd1yxhvFCN82YqEFI82q2n0k_y06F?usp=sharing)
 
-An abstract implementation of the software design pattern called registry proposed in (Hartog et. al., 2023),
-providing a factory for creating registries to which categorically similar modules can be organized.
+An abstract implementation of the software design pattern called Registry proposed by Hartog et. al. (2024),
+providing a factory for creating registries to organize categorically similar modules.
 
 **[Installation](#installation)**
 | **[Dependencies](#dependencies)**
@@ -16,7 +15,7 @@ providing a factory for creating registries to which categorically similar modul
 
 ### Overview
 
-The registry design patterns provides a way to organize modular
+The registry design pattern provides a way to organize modular
 functionalities dynamically and achieve a unified, reusable, and interchangeable interface.
 It extends the Factory design pattern without the explicit class dependency.
 Additionally, the registry supports optional meta information such as versioning, accreditation,
@@ -38,7 +37,7 @@ The codebase can be installed from PyPI using `pip`, or your package manager of 
 $ pip install registry-factory
 ```
 
-Or from local clone, with
+Or from a local clone, with
 
 ```bash
 $ conda env create -f env-dev.yaml
@@ -64,7 +63,7 @@ functionalities. 5) Call the optional module from the registry from the main wor
 <i>Created with BioRender.com</i>
  </p>
 
-Further available options and use-cases are described in the following sections.
+Additional available options and use cases are described in the following sections.
 
 ### A basic registry
 
@@ -89,7 +88,7 @@ class SimpleModel(nn.Module):
 
 ### Shared modules
 
-A registry can be created to store shared modules. Shared modules are modules that are used in multiple registries (e.g. a model and a module).
+A registry can be created to store shared modules. Shared modules are used in multiple registries (e.g. a model and a module).
 
 ```Python
 from registry_factory.factory import Factory
@@ -148,7 +147,7 @@ Registries.ModelRegistry.get("simple_model") # Error, version not specified.
 Registries.ModelRegistry.get("simple_model", version="1.0.0") # Returns the module.
 ```
 
-Accreditation can be used to keep track of how and to who credit should be attributed the module.
+Accreditation can be used to keep track of how and to whom credit should be attributed for a given module.
 The accreditation can be set when registering a module.
 
 ```Python
@@ -171,11 +170,15 @@ Registries.ModelRegistry.get("simple_model")  # Returns the module.
 Registries.ModelRegistry.get_info("simple_model")  # Returns all meta information including the accreditation information.
 ```
 
-The reason why accreditation can return an object without specification is because the accreditation does not have "key" information. In the versioning module, the version is the key information which is used to grab the module from the registry. Without specifying the version, the registry will not know which module to return. In the accreditation module, the author, credit type, and additional information are not key information. Without specifying the author, credit type, and additional information, the registry will still know which module to return.
+The reason why the accreditation system can return an object without specification is because the accreditation system lacks "key" information. 
+In the versioning module, the version is the key information that is used to grab the module from the registry. 
+Without specifying the version the registry will not know which module to return. 
+Therefore, the author, credit type, and additional information are not key information in the accreditation system. 
+Without specifying the author, credit type, and additional information, the registry will still know which module to return.
 
 ### Testing and Factory Patterns
 
-We also provide defining tests and post checks applied to all modules in a registry. Define test
+We also provide defining tests and post-checks applied to all modules in a registry. Define test
 or post checks as follows when creating the registry.
 
 ```Python
@@ -254,7 +257,7 @@ Registries.ModelRegistry.register_prebuilt(key="name_test", obj="not_test") # Er
 ## Citation
 
 Our paper in which we propose the registry design pattern, on which this package is built, is currently
-available as a preprint. If you make use of the design pattern or this package please cite our work accordingly.
+available as a preprint. If you use the design pattern or this package please cite our work accordingly.
 
 !!!!!! ADD PAPER LINK !!!!!!
 
