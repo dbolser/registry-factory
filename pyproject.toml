@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "registry-factory"
-version = "0.1.2"
-description = "Abstract codebase with utilities to register generic modules."
+version = "0.1.3"
+description = "Registry pattern with factory for specifications to register generic modules."
 authors = ["Peter Hartog <peter.hartog@hotmail.nl>", "Emma Svensson <svensson@ml.jku.at>"]
 license = "MIT"
 readme = "README.md"
@@ -13,21 +13,11 @@ classifiers = [
     "Environment :: GPU :: NVIDIA CUDA :: 11.4",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
-include = [
-    "LICENSE",
-]
+include = ["LICENSE"]
 packages = [{include = "registry_factory"}]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-
-# A list of all of the optional dependencies, some of which are included in the
-# below `extras`. They can be opted into by apps.
-#yaml = { version = "^2.6", optional = true }
-#hypdra = { version = "^0.12.16", optional = true }
-
-[tool.poetry.dev-dependencies]
-pytest = "^5.2"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2.2"
