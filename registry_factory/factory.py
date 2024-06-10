@@ -1,10 +1,7 @@
 """Registry factory module for a codebase."""
 
-# from __future__ import annotations
-
 from typing import Any, Dict, List, Optional, Tuple
 
-# from registry_factory.callbacks.tracker import Tracker
 from registry_factory.index import HashTable, RegistryTable
 from registry_factory.patterns.facade import ObserverFacade
 from registry_factory.patterns.mediator import HashMediator
@@ -114,7 +111,7 @@ class Factory:
 
         options = {}
         for name, registry in registries.items():
-            options[name] = [k[0] for k in registry.keys()]
+            options[name] = [k for k in registry.keys()]
 
         options_listed: List[str] = list(*options.values())
         return options_listed

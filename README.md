@@ -74,7 +74,7 @@ A simple registry is created as such.
 from registry_factory.factory import Factory
 
 class Registries(Factory):
-    TestRegistry = Factory.create_registry(shared=False)
+    ModelRegistry = Factory.create_registry("model_registry", shared=False)
 ```
 
 Next, any models can be added to the ModelRegistry as such.
@@ -95,10 +95,10 @@ A registry can be created to store shared modules. Shared modules are modules th
 from registry_factory.factory import Factory
 
 class Registries(Factory):
-    ModelRegistry = Factory.create_registry(shared=True)
-    ModuleRegistry = Factory.create_registry(shared=True)
+    ModelRegistry = Factory.create_registry("model_registry", shared=True)
+    ModuleRegistry = Factory.create_registry("module_registry", shared=True)
 
-@Registries.ModelRegistry.register(call_name="encoder")
+@Registries.ModelRegistry.register("encoder")
 class Encoder(nn.Module):
     ...
 
@@ -111,9 +111,11 @@ A registry can be created to store modules with arguments. The arguments can be 
 
 ```Python
 from registry_factory.factory import Factory
+from dataclasses import dataclass
+
 
 class Registries(Factory):
-    ModelRegistry = Factory.create_registry(shared=True)
+    ModelRegistry = Factory.create_registry("model_registry", shared=True)
 
 @Registries.ModelRegistry.register_arguments(key="simple_model")
 @dataclass
@@ -154,7 +156,7 @@ from registry_factory.factory import Factory
 from registry_factory.checks.accreditation import Accreditation
 
 class Registries(Factory):
-    ModelRegistry = Factory.create_registry(checks=[Accreditation(forced=False)])
+    ModelRegistry = Factory.create_registry("model_registry", checks=[Accreditation(forced=False)])
 
 @Registries.ModelRegistry.register(
     call_name="simple_model",
@@ -177,6 +179,9 @@ We also provide defining tests and post checks applied to all modules in a regis
 or post checks as follows when creating the registry.
 
 ```Python
+from registry_factory.factory import Factory
+from registry_factory.checks.factory_pattern import FactoryPattern
+
 class Pattern:
     """Test pattern."""
 
@@ -189,20 +194,16 @@ class Pattern:
 
 class Registries(Factory):
     ModelRegistry = Factory.create_registry(
-        shared=False, checks=[FactoryPattern(factory_pattern=Pattern, forced=False)]
+        "model_registry", shared=False, checks=[FactoryPattern(factory_pattern=Pattern, forced=False)]
     )
 
 # No error, the module passes the test.
-@ModelRegistry.register(
-    call_name="hello_world"
-)
+@ModelRegistry.register(key="hello_world")
 class HelloWorld(Pattern):
     pass
 
 # No error, the module passes the test.
-@ModelRegistry.register(
-    call_name="hello_world2"
-)
+@ModelRegistry.register(key="hello_world2")
 class HelloWorld:
     def __init__(self):
         pass
@@ -212,9 +213,7 @@ class HelloWorld:
         print("Hello world")
 
 # Error, the module does not pass the test.
-@ModelRegistry.register(
-    call_name="hello_world2"
-)
+@ModelRegistry.register(key="hello_world2")
 class HelloWorld:
     def __init__(self):
         pass
@@ -227,6 +226,10 @@ class HelloWorld:
 The factory also supports adding a callable test module to the registry. The callable test module can be specified to be called when a module is registered. The callable test module can be used to test the module when it is registered. The callable test module can be specified as follows when creating the registry.
 
 ```Python
+from typing import Any
+from registry_factory.factory import Factory
+from registry_factory.checks.testing import Testing
+
 class CallableTestModule:
     """Module to test."""
 
@@ -241,10 +244,11 @@ class CallableTestModule:
 
 class Registries(Factory):
     ModelRegistry = Factory.create_registry(
-        shared=False, checks=[Testing(test_module=CallableTestModule, forced=True)]
+        "model_registry", shared=False, checks=[Testing(test_module=CallableTestModule, forced=True)]
     )
 
 Registries.ModelRegistry.register_prebuilt(key="name_test", obj="test") # No error, the module passes the test.
+Registries.ModelRegistry.register_prebuilt(key="name_test", obj="not_test") # Error, the module doesn't pass the test.
 ```
 
 ## Citation

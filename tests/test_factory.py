@@ -1,6 +1,7 @@
 """Test cases for Registry sharing.
 Author: PeterHartog
 """
+
 from dataclasses import dataclass
 
 import pytest
@@ -49,6 +50,8 @@ def test_get_subclass_choices(test_factory: Factory) -> None:
 
     test_registry = test_factory.create_registry("test_registry")
     test_registry.register_prebuilt(lambda: None, "test")
+
+    print(test_factory.get_options(["test_registry"]))
 
     assert "test" in test_factory.get_options(["test_registry"])
 

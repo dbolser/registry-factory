@@ -1,4 +1,5 @@
 """Registry module for a codebase."""
+
 import warnings
 from dataclasses import dataclass, is_dataclass
 from typing import Any, Callable, Dict, List, Optional, Tuple
@@ -38,12 +39,13 @@ class _RegistryDict:
     @classmethod
     def keys(cls) -> List[Tuple[str, Dict]]:
         """Return a list of registered keys."""
-        return [(key, key_dict) for key, key_dict in cls.mediator.hash_table.slots.values()]
+        return [key for key, key_dict in cls.mediator.hash_table.slots.values()]
 
     @classmethod
     def values(cls) -> List[Any]:
-        """Return a list of registered keys."""
-        return [cls.mediator.hash_table.data.values()]
+        """Return a list of registered items."""
+        hashes = [key for key in cls.mediator.hash_table.slots.keys()]
+        return [cls.mediator.hash_table.data[_hash] for _hash in hashes]
 
     @classmethod
     def reset(cls):
