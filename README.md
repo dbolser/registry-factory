@@ -63,7 +63,7 @@ functionalities. 5) Call the optional module from the registry from the main wor
 <i>Created with BioRender.com</i>
  </p>
 
-Additional available options and use cases are described in the following sections.
+Additional available options and use cases are described in the following sections. See also [examples](examples).
 
 <!-- ### A basic registry -->
 <details>
