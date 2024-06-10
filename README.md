@@ -1,11 +1,6 @@
 # RegistryFactory
 
-[![PyPI version](https://badge.fury.io/py/registry-factory.svg)](https://badge.fury.io/py/registry-factory)
-[![PyPI](https://img.shields.io/github/license/aidd-msca/registry-factory)](LICENSE)
-![PyPI](https://img.shields.io/pypi/pyversions/registry-factory)
-[![GitHub Repo stars](https://img.shields.io/github/stars/aidd-msca/registry-factory)](https://github.com/aidd-msca/registry-factory/stargazers)
-
-An abstract implementation of the software design pattern called Registry proposed by Hartog and Svensson et. al. (2024),
+An abstract implementation of the software design pattern called Registry proposed by Anonymous et. al. (2024),
 providing a factory for creating registries to organize categorically similar modules.
 
 **[Installation](#installation)**
@@ -34,7 +29,7 @@ The UML diagrams show the differences between the factory and registry patterns.
 The codebase can be installed from PyPI using `pip`, or your package manager of choice, with
 
 ```bash
-$ pip install registry-factory
+$ pip install [Anonymous]
 ```
 
 Or from a local clone, with
@@ -361,21 +356,3 @@ Our paper in which we propose the registry design pattern, on which this package
 available as a preprint. If you use the design pattern or this package please cite our work accordingly.
 
 [paper link]
-
-<!-- ```
-@inproceedings{hartog2023registry,
-    title={Registry: a design pattern to promote code reuse in machine learning-based drug discovery},
-    author={Hartog, Peter and Svensson, Emma and Mervin, Lewis and Genheden, Samuel and Engkvist, Ola and Tetko, Igor},
-    year={2023},
-    note={Preprint}
-}
-``` -->
-
-### Funding
-
-The work behind this package has received funding from the European Union’s Horizon 2020
-research and innovation programme under the Marie Skłodowska-Curie
-Actions, grant agreement “Advanced machine learning for Innovative Drug
-Discovery (AIDD)” No 956832”. [Homepage](https://ai-dd.eu/).
-
-![plot](figures/aidd.png)
