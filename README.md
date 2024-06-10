@@ -71,18 +71,15 @@ Additional available options and use cases are described in the following sectio
 A simple registry is created as such.
 
 ```Python
-from registry_factory.factory import Factory
-
-class Registries(Factory):
-    ModelRegistry = Factory.create_registry("model_registry", shared=False)
+from registry_factory.registry import Registry
 ```
 
-Next, any models can be added to the ModelRegistry as such.
+Next, any models can be added to the registry as such.
 
 ```Python
 import torch.nn as nn
 
-@Registries.ModelRegistry.register(call_name="simple_model")
+@Registry.register("simple_model")
 class SimpleModel(nn.Module):
     ...
 ```
@@ -92,7 +89,7 @@ class SimpleModel(nn.Module):
 <!-- ### Shared modules -->
 <details>
 <summary> Shared modules </summary>
-A registry can be created to store shared modules. Shared modules are modules that are used in multiple registries (e.g. a model and a module).
+To specify specific registries and have them share modules, we use the Factory class. Shared modules are modules that are used in multiple registries (e.g. a model and a module).
 
 ```Python
 from registry_factory.factory import Factory
@@ -130,7 +127,7 @@ class SimpleModelArguments:
     output_size: int
 ```
 
-Only dataclasses can be used as arguments.
+Only dataclasses can be used as arguments for now.
 
 </details>
 
@@ -168,7 +165,7 @@ class Registries(Factory):
     ModelRegistry = Factory.create_registry("model_registry", checks=[Accreditation(forced=False)])
 
 @Registries.ModelRegistry.register(
-    call_name="simple_model",
+    key="simple_model",
     author="Author name",
     credit_type="reference",
     additional_information="Reference published work in (link)."
@@ -273,6 +270,8 @@ Registries.ModelRegistry.register_prebuilt(key="name_test", obj="not_test") # Er
 <details>
 <summary> Hooks insertions </summary>
 
+Here we outline the use of registries in code to create hooks for outside users. The example given below contains a function unaccessible by users that have two options.
+
 ```Python
 from registry_factory.registry import Registry
 
@@ -288,12 +287,20 @@ def _some_hidden_function(a: str) -> int:
     try:
         return print(Registry.get(f"option_{a}")())
     except Exception as e:
-        return print(0)
+        raise RuntimeError("Error getting the option", e)
+```
 
+When a new users uses this code and selects option two, it will cause an error as it has not yet been implemented.
+
+```Python
 _some_hidden_function(1) # Returns 1
 _some_hidden_function(3) # Returns 3
-_some_hidden_function(2) # Returns 0 !!
+_some_hidden_function(2) # Error
+```
 
+Normally, this would be the end, but with registries, the user can easily create a new function that will solve the issue.
+
+```Python
 @Registry.register("option_2") # External user adds new option
 def option_2() -> int:
     return 2
@@ -307,6 +314,8 @@ _some_hidden_function(2) # Returns 2
 
 <details>
 <summary> Compatibility wrapper </summary>
+
+Another example of how to use registries, is to make two incompatible functions work through wrappers. Users can specify specific wrappers for functions and register them using the registry.
 
 ```Python
 from registry_factory.factory import Factory
@@ -322,7 +331,11 @@ def func2():
 
 def final_function(key: str) -> str:
     return Registries.ModelRegistry.get(key)()
+```
 
+Here the example will output the wrong versions if the objects are registered as is: one a string the other a list. You can easily use wrapper functions to register the objects in such a way that they output the correct types and become compatible.
+
+```Python
 # External user creates wrapper function to make both functions work with final function
 def wrapper_function(func):
     def wrapper(*args, **kwargs):
