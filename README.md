@@ -5,8 +5,7 @@
 ![PyPI](https://img.shields.io/pypi/pyversions/registry-factory)
 [![GitHub Repo stars](https://img.shields.io/github/stars/aidd-msca/registry-factory)](https://github.com/aidd-msca/registry-factory/stargazers)
 
-An abstract implementation of the software design pattern called Registry proposed by Hartog and Svensson et. al. (2024),
-providing a factory for creating registries to organize categorically similar modules.
+An abstract implementation of the software design pattern called Registry proposed by [Hartog and Svensson et. al. (2024)](https://doi.org/10.1007/978-3-031-72381-0_9) providing a factory for creating registries to organize categorically similar modules.
 
 **[Installation](#installation)**
 | **[Dependencies](#dependencies)**
@@ -360,7 +359,7 @@ print(final_function("universe")) # -> Hello universe
 Our paper in which we propose the registry design pattern, on which this package is built, is currently
 available as a preprint. If you use the design pattern or this package please cite our work accordingly.
 
-[paper link]
+ - [Hartog, P.B.R., Svensson, E., Mervin, L., Genheden, S., Engkvist, O., Tetko, I.V. (2025). Registries in Machine Learning-Based Drug Discovery: A Shortcut to Code Reuse. In: Clevert, DA., Wand, M., Malinovská, K., Schmidhuber, J., Tetko, I.V. (eds) AI in Drug Discovery. AIDD 2024. Lecture Notes in Computer Science, vol 14894. Springer, Cham.](https://doi.org/10.1007/978-3-031-72381-0_9)
 
 <!-- ```
 @inproceedings{hartog2023registry,
